@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react'
-import { Camera, Upload, X, Clock, Users, Filter } from 'lucide-react'
+import { Camera, Upload, X, Clock, Users, Filter, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import IngredientDetector from '../components/IngredientDetector'
+import ManualIngredientEntry from '../components/ManualIngredientEntry'
 import RecipeList from '../components/RecipeList'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [isDetecting, setIsDetecting] = useState(false)
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
+  const [activeTab, setActiveTab] = useState<'camera' | 'manual'>('camera')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleImageSelect = (file: File) => {
@@ -23,6 +25,9 @@ export default function Dashboard() {
       setImagePreview(e.target?.result as string)
     }
     reader.readAsDataURL(file)
+    // Clear manual ingredients when switching to camera mode
+    setDetectedIngredients([])
+    setRecipes([])
   }
 
   const handleDrop = (e: React.DragEvent) => {
@@ -55,6 +60,16 @@ export default function Dashboard() {
     setRecipes(recipes)
   }
 
+  const handleTabSwitch = (tab: 'camera' | 'manual') => {
+    setActiveTab(tab)
+    // Clear data when switching tabs
+    setDetectedIngredients([])
+    setRecipes([])
+    if (tab === 'manual') {
+      clearImage()
+    }
+  }
+
   const filters = [
     { id: 'all', label: 'All Recipes', icon: null },
     { id: 'quick', label: 'Quick (< 30 min)', icon: Clock },
@@ -68,73 +83,111 @@ export default function Dashboard() {
           Welcome back, {user?.name}!
         </h1>
         <p className="text-gray-600">
-          Upload a photo of your ingredients or pantry to discover amazing recipes you can make right now.
+          Upload a photo of your ingredients or manually enter them to discover amazing recipes you can make right now.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Image Upload Section */}
+        {/* Input Section */}
         <div className="space-y-6">
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-              <Camera className="h-5 w-5 text-success-500" />
-              <span>Detect Ingredients</span>
-            </h2>
-
-            {!imagePreview ? (
-              <div
-                className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-success-400 transition-colors cursor-pointer"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-lg font-medium text-gray-700 mb-2">
-                  Drop your image here or click to browse
-                </p>
-                <p className="text-sm text-gray-500">
-                  Supports JPG, PNG, and other image formats
-                </p>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleImageSelect(file)
-                  }}
-                  className="hidden"
-                />
-              </div>
-            ) : (
-              <div className="relative">
-                <img
-                  src={imagePreview}
-                  alt="Selected ingredients"
-                  className="w-full h-64 object-cover rounded-xl"
-                />
-                <button
-                  onClick={clearImage}
-                  className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
-                >
-                  <X className="h-4 w-4 text-gray-600" />
-                </button>
-              </div>
-            )}
-
-            {selectedImage && (
-              <IngredientDetector
-                image={selectedImage}
-                onIngredientsDetected={handleIngredientsDetected}
-                onRecipesLoaded={handleRecipesLoaded}
-                isDetecting={isDetecting}
-                setIsDetecting={setIsDetecting}
-                setIsLoadingRecipes={setIsLoadingRecipes}
-              />
-            )}
+          {/* Tab Selector */}
+          <div className="flex bg-gray-100 rounded-xl p-1">
+            <button
+              onClick={() => handleTabSwitch('camera')}
+              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
+                activeTab === 'camera'
+                  ? 'bg-white text-success-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Camera className="h-4 w-4" />
+              <span>Camera Detection</span>
+            </button>
+            <button
+              onClick={() => handleTabSwitch('manual')}
+              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
+                activeTab === 'manual'
+                  ? 'bg-white text-success-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Search className="h-4 w-4" />
+              <span>Manual Entry</span>
+            </button>
           </div>
 
-          {/* Detected Ingredients */}
+          {/* Camera Detection Tab */}
+          {activeTab === 'camera' && (
+            <div className="card p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                <Camera className="h-5 w-5 text-success-500" />
+                <span>AI Ingredient Detection</span>
+              </h2>
+
+              {!imagePreview ? (
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-success-400 transition-colors cursor-pointer"
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-lg font-medium text-gray-700 mb-2">
+                    Drop your image here or click to browse
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Supports JPG, PNG, and other image formats
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) handleImageSelect(file)
+                    }}
+                    className="hidden"
+                  />
+                </div>
+              ) : (
+                <div className="relative">
+                  <img
+                    src={imagePreview}
+                    alt="Selected ingredients"
+                    className="w-full h-64 object-cover rounded-xl"
+                  />
+                  <button
+                    onClick={clearImage}
+                    className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
+              )}
+
+              {selectedImage && (
+                <IngredientDetector
+                  image={selectedImage}
+                  onIngredientsDetected={handleIngredientsDetected}
+                  onRecipesLoaded={handleRecipesLoaded}
+                  isDetecting={isDetecting}
+                  setIsDetecting={setIsDetecting}
+                  setIsLoadingRecipes={setIsLoadingRecipes}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Manual Entry Tab */}
+          {activeTab === 'manual' && (
+            <ManualIngredientEntry
+              onIngredientsSelected={handleIngredientsDetected}
+              onRecipesLoaded={handleRecipesLoaded}
+              setIsLoadingRecipes={setIsLoadingRecipes}
+            />
+          )}
+
+          {/* Detected/Selected Ingredients */}
           <AnimatePresence>
             {detectedIngredients.length > 0 && (
               <motion.div
@@ -144,7 +197,7 @@ export default function Dashboard() {
                 className="card p-6"
               >
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Detected Ingredients ({detectedIngredients.length})
+                  {activeTab === 'camera' ? 'Detected' : 'Selected'} Ingredients ({detectedIngredients.length})
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {detectedIngredients.map((ingredient, index) => (
@@ -153,7 +206,7 @@ export default function Dashboard() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.1 }}
-                      className="ingredient-tag"
+                      className="ingredient-tag capitalize"
                     >
                       {ingredient}
                     </motion.span>
@@ -201,7 +254,7 @@ export default function Dashboard() {
                 No recipes found
               </h3>
               <p className="text-gray-600">
-                Try uploading a different image with more common ingredients.
+                Try {activeTab === 'camera' ? 'uploading a different image' : 'selecting different ingredients'} with more common ingredients.
               </p>
             </div>
           )}
@@ -209,13 +262,20 @@ export default function Dashboard() {
           {recipes.length === 0 && detectedIngredients.length === 0 && (
             <div className="card p-8 text-center">
               <div className="text-gray-400 mb-4">
-                <Upload className="h-12 w-12 mx-auto" />
+                {activeTab === 'camera' ? (
+                  <Upload className="h-12 w-12 mx-auto" />
+                ) : (
+                  <Search className="h-12 w-12 mx-auto" />
+                )}
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 Ready to cook something amazing?
               </h3>
               <p className="text-gray-600">
-                Upload a photo of your ingredients to get started with personalized recipe recommendations.
+                {activeTab === 'camera' 
+                  ? 'Upload a photo of your ingredients to get started with AI-powered recipe recommendations.'
+                  : 'Search and select your available ingredients to discover personalized recipes.'
+                }
               </p>
             </div>
           )}

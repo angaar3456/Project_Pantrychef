@@ -43,7 +43,7 @@ export default function RecipeDetail() {
       fiber: '4g'
     },
     tags: ['Vegetarian', 'Quick', 'Healthy', 'Asian'],
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+    youtubeUrl: 'https://www.youtube.com/watch?v=Ug_VJVkULks'
   }
 
   return (
