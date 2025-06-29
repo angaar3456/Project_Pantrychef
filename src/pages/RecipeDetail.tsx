@@ -1,4 +1,3 @@
-import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Clock, Users, ChefHat, ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
