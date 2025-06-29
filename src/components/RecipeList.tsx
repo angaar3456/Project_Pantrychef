@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Clock, Users, ChefHat, ExternalLink, Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useState, useMemo } from 'react'
 
 interface Recipe {
   id: number
@@ -17,9 +18,42 @@ interface Recipe {
 interface RecipeListProps {
   recipes: Recipe[]
   isLoading: boolean
+  activeFilter?: string
 }
 
-export default function RecipeList({ recipes, isLoading }: RecipeListProps) {
+export default function RecipeList({ recipes, isLoading, activeFilter = 'all' }: RecipeListProps) {
+  const [favorites, setFavorites] = useState<number[]>([])
+
+  const filteredRecipes = useMemo(() => {
+    if (activeFilter === 'all') return recipes
+    
+    return recipes.filter(recipe => {
+      switch (activeFilter) {
+        case 'quick':
+          const timeValue = parseInt(recipe.cookTime)
+          return timeValue <= 30
+        case 'family':
+          return recipe.servings >= 4
+        case 'vegetarian':
+          return recipe.tags.includes('Vegetarian')
+        case 'protein':
+          return recipe.tags.includes('Protein')
+        case 'comfort':
+          return recipe.tags.includes('Comfort Food')
+        default:
+          return true
+      }
+    })
+  }, [recipes, activeFilter])
+
+  const toggleFavorite = (recipeId: number) => {
+    setFavorites(prev => 
+      prev.includes(recipeId) 
+        ? prev.filter(id => id !== recipeId)
+        : [...prev, recipeId]
+    )
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -43,20 +77,36 @@ export default function RecipeList({ recipes, isLoading }: RecipeListProps) {
     )
   }
 
-  if (recipes.length === 0) {
+  if (filteredRecipes.length === 0 && recipes.length > 0) {
+    return (
+      <div className="card p-12 text-center">
+        <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+          <ChefHat className="h-10 w-10 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">
+          No recipes match your filter
+        </h3>
+        <p className="text-gray-600 font-medium text-lg">
+          Try selecting a different filter to see more magical recipes!
+        </p>
+      </div>
+    )
+  }
+
+  if (filteredRecipes.length === 0) {
     return null
   }
 
   return (
     <div className="space-y-6">
-      {recipes.map((recipe, index) => (
+      {filteredRecipes.map((recipe, index) => (
         <motion.div
           key={recipe.id}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
         >
-          <div className="recipe-card p-6 group">
+          <div className="recipe-card p-6 group relative">
             <div className="flex space-x-6">
               <div className="relative flex-shrink-0">
                 <img
@@ -65,11 +115,22 @@ export default function RecipeList({ recipes, isLoading }: RecipeListProps) {
                   className="w-32 h-32 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl"></div>
-                <div className="absolute top-3 right-3">
-                  <div className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    <Heart className="h-4 w-4 text-red-400" />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    toggleFavorite(recipe.id)
+                  }}
+                  className="absolute top-3 right-3 z-20"
+                >
+                  <div className={`w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 ${
+                    favorites.includes(recipe.id) 
+                      ? 'bg-red-500 text-white' 
+                      : 'bg-white/90 text-red-400 hover:bg-red-500 hover:text-white'
+                  }`}>
+                    <Heart className={`h-4 w-4 ${favorites.includes(recipe.id) ? 'fill-current' : ''}`} />
                   </div>
-                </div>
+                </button>
               </div>
               
               <div className="flex-1 min-w-0">
@@ -82,11 +143,11 @@ export default function RecipeList({ recipes, isLoading }: RecipeListProps) {
                       href={recipe.youtubeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center space-x-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300"
+                      className="flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 z-20 relative"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <ExternalLink className="h-3 w-3" />
-                      <span>Video</span>
+                      <span>Watch Tutorial</span>
                     </a>
                   )}
                 </div>
@@ -117,10 +178,10 @@ export default function RecipeList({ recipes, isLoading }: RecipeListProps) {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {recipe.tags.slice(0, 3).map((tag) => (
+                  {recipe.tags.slice(0, 4).map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-gradient-to-r from-emerald-400 to-teal-500 text-white text-xs font-semibold rounded-full"
+                      className="px-3 py-1 bg-gradient-to-r from-emerald-400 to-teal-500 text-white text-xs font-semibold rounded-full shadow-sm"
                     >
                       {tag}
                     </span>

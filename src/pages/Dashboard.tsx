@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Camera, Upload, X, Clock, Users, Filter, Search, Sparkles, Zap, Heart } from 'lucide-react'
+import { Camera, Upload, X, Clock, Users, Filter, Search, Sparkles, Zap, Heart, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import IngredientDetector from '../components/IngredientDetector'
 import ManualIngredientEntry from '../components/ManualIngredientEntry'
@@ -63,15 +63,19 @@ export default function Dashboard() {
     setActiveTab(tab)
     setDetectedIngredients([])
     setRecipes([])
+    setActiveFilter('all')
     if (tab === 'manual') {
       clearImage()
     }
   }
 
   const filters = [
-    { id: 'all', label: 'All Recipes', icon: null },
-    { id: 'quick', label: 'Quick (< 30 min)', icon: Clock },
-    { id: 'family', label: 'Family Size', icon: Users },
+    { id: 'all', label: 'All Recipes', icon: Star },
+    { id: 'quick', label: 'Quick (≤ 30 min)', icon: Clock },
+    { id: 'family', label: 'Family Size (4+ servings)', icon: Users },
+    { id: 'vegetarian', label: 'Vegetarian', icon: Heart },
+    { id: 'protein', label: 'High Protein', icon: Zap },
+    { id: 'comfort', label: 'Comfort Food', icon: Sparkles },
   ]
 
   return (
@@ -266,31 +270,45 @@ export default function Dashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  className="flex items-center justify-between glass-card p-6"
+                  className="glass-card p-6"
                 >
-                  <h2 className="text-2xl font-bold gradient-text flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-                      <Sparkles className="h-4 w-4 text-white" />
-                    </div>
-                    <span>Magic Recipes ({recipes.length})</span>
-                  </h2>
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold gradient-text flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+                      <span>Magic Recipes ({recipes.length})</span>
+                    </h2>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 mb-4">
                     <Filter className="h-5 w-5 text-purple-500" />
-                    <select
-                      value={activeFilter}
-                      onChange={(e) => setActiveFilter(e.target.value)}
-                      className="input-glass text-sm px-4 py-2 focus:outline-none font-medium"
-                    >
-                      {filters.map((filter) => (
-                        <option key={filter.id} value={filter.id}>
-                          {filter.label}
-                        </option>
-                      ))}
-                    </select>
+                    <span className="font-semibold text-gray-700">Filter by:</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                    {filters.map((filter) => (
+                      <button
+                        key={filter.id}
+                        onClick={() => setActiveFilter(filter.id)}
+                        className={`flex items-center space-x-2 px-4 py-3 rounded-2xl font-semibold transition-all duration-300 text-sm ${
+                          activeFilter === filter.id
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105'
+                            : 'bg-white/70 text-gray-600 hover:bg-white hover:text-purple-600 border border-white/30'
+                        }`}
+                      >
+                        {filter.icon && <filter.icon className="h-4 w-4" />}
+                        <span className="truncate">{filter.label}</span>
+                      </button>
+                    ))}
                   </div>
                 </motion.div>
 
-                <RecipeList recipes={recipes} isLoading={isLoadingRecipes} />
+                <RecipeList 
+                  recipes={recipes} 
+                  isLoading={isLoadingRecipes} 
+                  activeFilter={activeFilter}
+                />
               </>
             )}
 
