@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_BASE_URL = '/api'
 const SPOONACULAR_API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'spoonacular-08c06d722ae247a781cfabe6a09ac558'
 
 // Create axios instance
