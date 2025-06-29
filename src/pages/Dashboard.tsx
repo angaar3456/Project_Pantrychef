@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Camera, Upload, X, Loader2, Clock, Users, Filter } from 'lucide-react'
+import { Camera, Upload, X, Clock, Users, Filter } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import IngredientDetector from '../components/IngredientDetector'
 import RecipeList from '../components/RecipeList'
