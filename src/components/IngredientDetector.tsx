@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
 
 interface IngredientDetectorProps {
   image: File
