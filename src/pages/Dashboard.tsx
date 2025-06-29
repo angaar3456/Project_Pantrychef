@@ -129,7 +129,6 @@ export default function Dashboard() {
                 onRecipesLoaded={handleRecipesLoaded}
                 isDetecting={isDetecting}
                 setIsDetecting={setIsDetecting}
-                isLoadingRecipes={isLoadingRecipes}
                 setIsLoadingRecipes={setIsLoadingRecipes}
               />
             )}
