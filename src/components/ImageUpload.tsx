@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Camera, Upload, X, Image as ImageIcon, AlertCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -167,7 +167,7 @@ export default function ImageUpload({
         </button>
         
         <button
-          onClick={() => document.querySelector('input[type="file"]')?.click()}
+          onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
           className="flex-1 btn-primary flex items-center justify-center space-x-3"
         >
           <Upload className="h-5 w-5" />
