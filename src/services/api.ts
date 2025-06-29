@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-const SPOONACULAR_API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'demo_key'
+const SPOONACULAR_API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'spoonacular-08c06d722ae247a781cfabe6a09ac558'
 
 // Create axios instance
 const api = axios.create({
@@ -150,7 +150,7 @@ const searchSpoonacularRecipes = async (
           ingredients: detail.extendedIngredients?.map((ing: any) => ing.original) || [],
           instructions: detail.analyzedInstructions?.[0]?.steps?.map((step: any) => step.step) || [],
           tags: getRecipeTagsFromSpoonacular(detail),
-          youtubeUrl: await getYouTubeVideoForRecipe(recipe.title),
+          youtubeUrl: getYouTubeVideoForRecipe(recipe.title), // Use fallback video mapping
           nutrition: detail.nutrition ? {
             calories: Math.round(detail.nutrition.nutrients?.find((n: any) => n.name === 'Calories')?.amount || 0),
             protein: `${Math.round(detail.nutrition.nutrients?.find((n: any) => n.name === 'Protein')?.amount || 0)}g`,
@@ -172,22 +172,36 @@ const searchSpoonacularRecipes = async (
   return recipes.filter(Boolean) as Recipe[]
 }
 
-// YouTube API integration
-const getYouTubeVideoForRecipe = async (recipeName: string): Promise<string | undefined> => {
-  try {
-    const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY
-    if (!YOUTUBE_API_KEY) return undefined
-
-    const response = await axios.get(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(recipeName + ' recipe')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
-    )
-
-    const video = response.data.items?.[0]
-    return video ? `https://www.youtube.com/watch?v=${video.id.videoId}` : undefined
-  } catch (error) {
-    console.error('YouTube API failed:', error)
-    return undefined
+// YouTube video mapping (fallback without API)
+const getYouTubeVideoForRecipe = (recipeName: string): string | undefined => {
+  const videoMap: { [key: string]: string } = {
+    // Popular recipe video mappings
+    'pasta': 'https://www.youtube.com/watch?v=bJUiWdM__Qw',
+    'stir fry': 'https://www.youtube.com/watch?v=Ug_VJVkULks',
+    'chicken': 'https://www.youtube.com/watch?v=BL5eZ2pXGQs',
+    'soup': 'https://www.youtube.com/watch?v=j4HALhlt3oo',
+    'salad': 'https://www.youtube.com/watch?v=BHcyuzXRqLs',
+    'potato': 'https://www.youtube.com/watch?v=argKpeiKFfo',
+    'rice': 'https://www.youtube.com/watch?v=qH__o17xHls',
+    'bread': 'https://www.youtube.com/watch?v=qKqj85oo2wI',
+    'egg': 'https://www.youtube.com/watch?v=PUP7U5vTMM0',
+    'vegetable': 'https://www.youtube.com/watch?v=OpScbsn7G4Q',
+    'beef': 'https://www.youtube.com/watch?v=BL5eZ2pXGQs',
+    'fish': 'https://www.youtube.com/watch?v=xB3324Ry4LQ',
+    'cake': 'https://www.youtube.com/watch?v=1msm7d5_yls',
+    'pie': 'https://www.youtube.com/watch?v=1msm7d5_yls',
+    'sandwich': 'https://www.youtube.com/watch?v=BlTCkNkfmRY'
   }
+  
+  const lowerName = recipeName.toLowerCase()
+  for (const [keyword, url] of Object.entries(videoMap)) {
+    if (lowerName.includes(keyword)) {
+      return url
+    }
+  }
+  
+  // Default cooking video
+  return 'https://www.youtube.com/watch?v=Ug_VJVkULks'
 }
 
 // Pantry Management API
@@ -372,6 +386,27 @@ const getFallbackRecipes = (ingredients: string[]): Recipe[] => {
       youtubeUrl: 'https://www.youtube.com/watch?v=argKpeiKFfo',
       rating: 4.7,
       reviews: 189
+    },
+    {
+      id: 3,
+      title: 'Creamy Tomato Pasta',
+      image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
+      cookTime: '25 minutes',
+      servings: 4,
+      difficulty: 'Medium',
+      description: 'Rich and creamy tomato pasta with fresh herbs.',
+      ingredients: ['Pasta', 'Tomatoes', 'Cream', 'Garlic', 'Basil'],
+      instructions: [
+        'Cook pasta according to package directions',
+        'Sauté garlic in olive oil',
+        'Add tomatoes and simmer',
+        'Stir in cream and herbs',
+        'Toss with pasta and serve'
+      ],
+      tags: ['Vegetarian', 'Comfort Food', 'Italian'],
+      youtubeUrl: 'https://www.youtube.com/watch?v=bJUiWdM__Qw',
+      rating: 4.6,
+      reviews: 312
     }
   ]
 
