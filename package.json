@@ -1,7 +1,7 @@
 {
   "name": "pantrychef",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,11 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "lucide-react": "^0.294.0",
-    "framer-motion": "^10.16.16"
+    "framer-motion": "^10.16.16",
+    "axios": "^1.6.2",
+    "react-hot-toast": "^2.4.1",
+    "react-intersection-observer": "^9.5.3",
+    "react-dropzone": "^14.2.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
