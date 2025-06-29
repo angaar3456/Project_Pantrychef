@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, X, Search } from 'lucide-react'
+import { Plus, X, Search, Sparkles, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface ManualIngredientEntryProps {
@@ -62,7 +62,6 @@ export default function ManualIngredientEntry({
     try {
       await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // Use the same recipe database as IngredientDetector
       const recipeDatabase = {
         "tomato": [
           { name: "Tomato Basil Pasta", video: "https://www.youtube.com/watch?v=bJUiWdM__Qw" },
@@ -125,12 +124,10 @@ export default function ManualIngredientEntry({
         }
       })
 
-      // Remove duplicates and limit to 5 recipes
       const uniqueRecipes = matchedRecipes.filter((recipe, index, self) => 
         index === self.findIndex(r => r.name === recipe.name)
       ).slice(0, 5)
       
-      // Transform into detailed recipe objects
       const detailedRecipes = uniqueRecipes.map((recipe, index) => ({
         id: index + 1,
         title: recipe.name,
@@ -152,7 +149,6 @@ export default function ManualIngredientEntry({
     }
   }
 
-  // Helper functions (same as in IngredientDetector)
   const getRecipeImage = (recipeName: string) => {
     const imageMap: { [key: string]: string } = {
       'Tomato Basil Pasta': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
@@ -283,20 +279,25 @@ export default function ManualIngredientEntry({
   }
 
   return (
-    <div className="card p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-        <Search className="h-5 w-5 text-success-500" />
-        <span>Manual Ingredient Entry</span>
+    <div className="card p-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
+        <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+          <Search className="h-4 w-4 text-white" />
+        </div>
+        <span className="gradient-text">Manual Ingredient Magic</span>
       </h2>
 
-      <div className="relative mb-4">
+      <div className="relative mb-6">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Search className="h-5 w-5 text-purple-400" />
+        </div>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => setShowSuggestions(searchTerm.length > 0)}
-          placeholder="Search for ingredients..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-success-500 focus:border-success-500"
+          placeholder="Search for magical ingredients..."
+          className="w-full pl-12 pr-4 py-4 input-glass text-lg font-medium placeholder-gray-500"
         />
         
         <AnimatePresence>
@@ -305,13 +306,13 @@ export default function ManualIngredientEntry({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+              className="absolute z-10 w-full mt-2 glass-card border border-white/30 rounded-2xl shadow-2xl max-h-64 overflow-y-auto"
             >
               {filteredIngredients.slice(0, 8).map((ingredient) => (
                 <button
                   key={ingredient}
                   onClick={() => addIngredient(ingredient)}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors capitalize"
+                  className="w-full px-6 py-4 text-left hover:bg-white/20 transition-all duration-200 capitalize font-medium text-gray-700 hover:text-purple-600 first:rounded-t-2xl last:rounded-b-2xl"
                 >
                   {ingredient}
                 </button>
@@ -322,22 +323,23 @@ export default function ManualIngredientEntry({
       </div>
 
       {selectedIngredients.length > 0 && (
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">
-            Selected Ingredients ({selectedIngredients.length})
+        <div className="mb-8">
+          <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center space-x-2">
+            <Sparkles className="h-5 w-5 text-purple-500" />
+            <span>Selected Magic Ingredients ({selectedIngredients.length})</span>
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {selectedIngredients.map((ingredient) => (
               <motion.span
                 key={ingredient}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-success-100 text-success-800 border border-success-200"
+                className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-lg"
               >
                 <span className="capitalize">{ingredient}</span>
                 <button
                   onClick={() => removeIngredient(ingredient)}
-                  className="ml-2 hover:text-success-600 transition-colors"
+                  className="ml-2 hover:text-red-200 transition-colors"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -347,15 +349,18 @@ export default function ManualIngredientEntry({
         </div>
       )}
 
-      <div className="mb-4">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Quick Add</h3>
-        <div className="flex flex-wrap gap-2">
+      <div className="mb-8">
+        <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center space-x-2">
+          <Zap className="h-5 w-5 text-orange-500" />
+          <span>Quick Add Popular Ingredients</span>
+        </h3>
+        <div className="flex flex-wrap gap-3">
           {['tomato', 'onion', 'garlic', 'potato', 'chicken', 'cheese', 'egg', 'rice'].map((ingredient) => (
             <button
               key={ingredient}
               onClick={() => addIngredient(ingredient)}
               disabled={selectedIngredients.includes(ingredient)}
-              className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed capitalize"
+              className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white/70 text-gray-700 hover:bg-white hover:text-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed capitalize border border-white/30 hover:border-purple-300"
             >
               <Plus className="h-3 w-3 mr-1" />
               {ingredient}
@@ -367,10 +372,11 @@ export default function ManualIngredientEntry({
       {selectedIngredients.length > 0 && (
         <button
           onClick={findRecipes}
-          className="w-full btn-primary flex items-center justify-center space-x-2"
+          className="w-full btn-primary flex items-center justify-center space-x-3 text-lg py-4"
         >
-          <Search className="h-4 w-4" />
-          <span>Find Recipes ({selectedIngredients.length} ingredients)</span>
+          <Sparkles className="h-5 w-5" />
+          <span>Create Magic Recipes ({selectedIngredients.length} ingredients)</span>
+          <Zap className="h-5 w-5" />
         </button>
       )}
     </div>

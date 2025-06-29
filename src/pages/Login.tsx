@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ChefHat, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { ChefHat, Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -32,22 +32,27 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.8 }}
         className="max-w-md w-full space-y-8"
       >
         <div className="text-center">
-          <div className="flex justify-center">
-            <ChefHat className="h-12 w-12 text-success-500" />
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl float-animation">
+                <ChefHat className="h-10 w-10 text-white" />
+              </div>
+              <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-2 -right-2 animate-bounce" />
+            </div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Welcome back to PantryChef
+          <h2 className="text-4xl font-bold gradient-text mb-4">
+            Welcome Back, Chef!
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/signup" className="font-medium text-success-600 hover:text-success-500">
-              Sign up here
+          <p className="text-gray-600 font-medium">
+            Ready to create more culinary magic?{' '}
+            <Link to="/signup" className="font-bold text-purple-600 hover:text-pink-600 transition-colors">
+              New here? Join us!
             </Link>
           </p>
         </div>
@@ -55,18 +60,22 @@ export default function Login() {
         <div className="card p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-lg">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-2xl font-medium"
+              >
                 {error}
-              </div>
+              </motion.div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email address
+              <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-3">
+                Email Address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-purple-400" />
                 </div>
                 <input
                   id="email"
@@ -76,19 +85,19 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-success-500 focus:border-success-500 transition-colors"
-                  placeholder="Enter your email"
+                  className="block w-full pl-12 pr-4 py-4 input-glass text-lg font-medium placeholder-gray-500"
+                  placeholder="Enter your magical email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-3">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-purple-400" />
                 </div>
                 <input
                   id="password"
@@ -98,18 +107,18 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-success-500 focus:border-success-500 transition-colors"
-                  placeholder="Enter your password"
+                  className="block w-full pl-12 pr-12 py-4 input-glass text-lg font-medium placeholder-gray-500"
+                  placeholder="Enter your secret password"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-purple-400 hover:text-purple-600 transition-colors" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-purple-400 hover:text-purple-600 transition-colors" />
                   )}
                 </button>
               </div>
@@ -121,16 +130,16 @@ export default function Login() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-success-600 focus:ring-success-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Remember me
+                <label htmlFor="remember-me" className="ml-3 block text-sm font-medium text-gray-700">
+                  Remember my magic
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-success-600 hover:text-success-500">
-                  Forgot your password?
+                <a href="#" className="font-bold text-purple-600 hover:text-pink-600 transition-colors">
+                  Forgot your spell?
                 </a>
               </div>
             </div>
@@ -138,25 +147,28 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary flex justify-center items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full btn-primary flex justify-center items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed text-lg py-4"
             >
               {isLoading ? (
                 <div className="loading-spinner"></div>
               ) : (
-                <span>Sign in</span>
+                <>
+                  <Sparkles className="h-5 w-5" />
+                  <span>Enter the Kitchen</span>
+                </>
               )}
             </button>
           </form>
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
-            By signing in, you agree to our{' '}
-            <a href="#" className="font-medium text-success-600 hover:text-success-500">
+          <p className="text-sm text-gray-600 font-medium">
+            By signing in, you agree to our magical{' '}
+            <a href="#" className="font-bold text-purple-600 hover:text-pink-600 transition-colors">
               Terms of Service
             </a>{' '}
             and{' '}
-            <a href="#" className="font-medium text-success-600 hover:text-success-500">
+            <a href="#" className="font-bold text-purple-600 hover:text-pink-600 transition-colors">
               Privacy Policy
             </a>
           </p>
