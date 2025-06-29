@@ -7,7 +7,6 @@ interface IngredientDetectorProps {
   onRecipesLoaded: (recipes: any[]) => void
   isDetecting: boolean
   setIsDetecting: (loading: boolean) => void
-  isLoadingRecipes: boolean
   setIsLoadingRecipes: (loading: boolean) => void
 }
 
@@ -17,7 +16,6 @@ export default function IngredientDetector({
   onRecipesLoaded,
   isDetecting,
   setIsDetecting,
-  isLoadingRecipes,
   setIsLoadingRecipes
 }: IngredientDetectorProps) {
   useEffect(() => {

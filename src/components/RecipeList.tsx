@@ -1,6 +1,5 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import { Clock, Users, ChefHat, Loader2 } from 'lucide-react'
+import { Clock, Users, ChefHat } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface Recipe {

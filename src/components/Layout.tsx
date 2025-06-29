@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChefHat, User, LogOut, Home, Camera } from 'lucide-react'
+import { ChefHat, User, LogOut, Camera } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 interface LayoutProps {
