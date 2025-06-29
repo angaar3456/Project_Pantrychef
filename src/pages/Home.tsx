@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Camera, Utensils, Clock, Leaf, ArrowRight, CheckCircle, Sparkles, Star, Zap } from 'lucide-react'
+import { Camera, Utensils, Clock, Leaf, ArrowRight, CheckCircle, Sparkles, Star, Zap, ChefHat } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 
