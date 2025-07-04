@@ -1,5 +1,4 @@
-import React from 'react'
-import { Filter, Clock, Users, Leaf, Zap, Heart } from 'lucide-react'
+import { Filter, Clock, Leaf, Zap, Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface RecipeFiltersProps {

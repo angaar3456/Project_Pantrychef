@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface ImageUploadProps {
   onImageSelect: (file: File) => void
   onClear: () => void
-  selectedImage?: File
+  selectedImage?: File | null
   imagePreview?: string
   isProcessing?: boolean
 }
