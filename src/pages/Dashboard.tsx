@@ -99,23 +99,40 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen py-8">
-      <Toaster position="top-right" />
+    <div className="min-h-screen py-8 relative">
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: 'rgba(17, 24, 39, 0.9)',
+            color: '#fff',
+            border: '1px solid rgba(75, 85, 99, 0.3)',
+            backdropFilter: 'blur(16px)',
+          },
+        }}
+      />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Floating background elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-full morphing-blob floating-element"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full morphing-blob floating-element" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 left-1/4 w-40 h-40 bg-gradient-to-r from-pink-500/10 to-cyan-500/10 rounded-full morphing-blob floating-element" style={{ animationDelay: '4s' }}></div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-12 slide-in-bottom"
         >
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl float-animation">
+              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-2xl pulsing-glow rotating-element">
                 <Sparkles className="h-8 w-8 text-white" />
               </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center floating-element">
                 <Zap className="h-3 w-3 text-white" />
               </div>
             </div>
@@ -124,7 +141,7 @@ export default function Dashboard() {
           <h1 className="text-4xl sm:text-5xl font-bold gradient-text mb-4">
             Welcome back, {user?.name}! ✨
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto font-medium">
             Ready to create some culinary magic? Choose how you'd like to discover amazing recipes today!
           </p>
         </motion.div>
@@ -134,12 +151,12 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-card p-2 mb-8"
+          className="glass-card p-2 mb-8 slide-in-bottom"
         >
           <div className="grid grid-cols-3 gap-2">
             <button
               onClick={() => handleTabSwitch('detect')}
-              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-300 ${
+              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-500 transform hover:scale-105 ${
                 activeTab === 'detect' ? 'tab-active' : 'tab-inactive'
               }`}
             >
@@ -149,7 +166,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => handleTabSwitch('manual')}
-              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-300 ${
+              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-500 transform hover:scale-105 ${
                 activeTab === 'manual' ? 'tab-active' : 'tab-inactive'
               }`}
             >
@@ -159,7 +176,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => handleTabSwitch('pantry')}
-              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-300 ${
+              className={`flex items-center justify-center space-x-3 py-4 px-6 rounded-2xl font-semibold transition-all duration-500 transform hover:scale-105 ${
                 activeTab === 'pantry' ? 'tab-active' : 'tab-inactive'
               }`}
             >
@@ -179,11 +196,11 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-8"
+                className="space-y-8 slide-in-left"
               >
-                <div className="card p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                <div className="card p-8 card-hover-effect">
+                  <h2 className="text-2xl font-bold text-gray-100 mb-6 flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg flex items-center justify-center pulsing-glow">
                       <Camera className="h-4 w-4 text-white" />
                     </div>
                     <span className="gradient-text">AI Magic Detection</span>
@@ -215,6 +232,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
+                className="slide-in-left"
               >
                 <ManualIngredientEntry
                   onIngredientsSelected={handleManualIngredientsSelected}
@@ -230,6 +248,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
+                className="slide-in-left"
               >
                 <PantryManager />
               </motion.div>
@@ -240,36 +259,50 @@ export default function Dashboard() {
           <div className="space-y-8">
             {/* Recipe Filters */}
             {(activeTab === 'detect' || activeTab === 'manual') && recipes.length > 0 && (
-              <RecipeFilters
-                activeFilters={recipeFilters}
-                onFiltersChange={setRecipeFilters}
-                recipeCount={recipes.length}
-              />
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="slide-in-right"
+              >
+                <RecipeFilters
+                  activeFilters={recipeFilters}
+                  onFiltersChange={setRecipeFilters}
+                  recipeCount={recipes.length}
+                />
+              </motion.div>
             )}
 
             {/* Quick Stats */}
-            <div className="glass-card p-6">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="glass-card p-6 card-hover-effect slide-in-right"
+            >
               <h3 className="text-lg font-bold gradient-text mb-4 flex items-center space-x-2">
-                <Heart className="h-5 w-5" />
+                <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-lg flex items-center justify-center pulsing-glow">
+                  <Heart className="h-3 w-3 text-white" />
+                </div>
                 <span>Your Kitchen Stats</span>
               </h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Recipes Found Today</span>
-                  <span className="font-bold text-purple-600">{recipes.length}</span>
+                  <span className="text-gray-300">Recipes Found Today</span>
+                  <span className="font-bold text-cyan-400">{recipes.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Ingredients Detected</span>
-                  <span className="font-bold text-purple-600">{detectedIngredients.length}</span>
+                  <span className="text-gray-300">Ingredients Detected</span>
+                  <span className="font-bold text-purple-400">{detectedIngredients.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Active Filters</span>
-                  <span className="font-bold text-purple-600">
+                  <span className="text-gray-300">Active Filters</span>
+                  <span className="font-bold text-pink-400">
                     {Object.values(recipeFilters).filter(Boolean).length}
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 
@@ -281,6 +314,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
+                className="slide-in-bottom"
               >
                 <h2 className="text-3xl font-bold gradient-text mb-8 text-center">
                   ✨ Your Magic Recipes ({recipes.length})
@@ -296,15 +330,15 @@ export default function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card p-12 text-center"
+                className="card p-12 text-center card-hover-effect slide-in-bottom"
               >
-                <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-6 pulsing-glow">
                   <Search className="h-10 w-10 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-gray-100 mb-4">
                   No recipes found
                 </h3>
-                <p className="text-gray-600 font-medium text-lg">
+                <p className="text-gray-400 font-medium text-lg">
                   Try adjusting your filters or adding more common ingredients to discover amazing recipes!
                 </p>
               </motion.div>
@@ -314,9 +348,9 @@ export default function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card p-12 text-center"
+                className="card p-12 text-center card-hover-effect slide-in-bottom"
               >
-                <div className="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-400 rounded-3xl flex items-center justify-center mx-auto mb-6 float-animation">
+                <div className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-6 pulsing-glow floating-element">
                   {activeTab === 'detect' ? (
                     <Camera className="h-10 w-10 text-white" />
                   ) : (
@@ -326,7 +360,7 @@ export default function Dashboard() {
                 <h3 className="text-2xl font-bold gradient-text mb-4">
                   Ready to create culinary magic? ✨
                 </h3>
-                <p className="text-gray-600 font-medium text-lg leading-relaxed">
+                <p className="text-gray-300 font-medium text-lg leading-relaxed">
                   {activeTab === 'detect' 
                     ? 'Upload a photo of your ingredients and watch our AI work its magic to create personalized recipe recommendations just for you!'
                     : 'Search and select your available ingredients to discover amazing recipes tailored to what you have in your kitchen right now!'
